@@ -21,3 +21,8 @@ function distance(){
     var m = km * 0.62137
     document.getElementById("miles").value = m
 }
+
+// Event listeners
+document.getElementById("temperature").addEventListener("click", temperature);
+document.getElementById("weight").addEventListener("click", weight);
+document.getElementById("distance").addEventListener("click", distance);
