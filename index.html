@@ -1,121 +1,88 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-      <title>Document</title>
-      <link rel="stylesheet" href="style.css">
-      <script src="script.js"></script>
-  </head>
-  <body>
-      <section id="home">
-        <header>
-          Unit Conversions
-        </header>
-        <nav>
-          <div class="topdiv">
-            <a href="#temperature"><button  class="topmenu">Temperature</button></a>
-            <a href="#weight"><button  class="topmenu">Weight</button></a>
-            <a href="#distance"><button  class="topmenu">Distance</button></a>
-          </div>
-        </nav>
-      </section>    
-      <div style="clear:both;"></div>
-     
-      <div id="all-conversion-sections">
+{% extends "base.html" %}
 
-        <section id="temperature"  class="b temperature">
-          <div id="tmp">
-            <figure>
-              <img src="https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBMDeveloperSkillsNetwork-CD0101EN-SkillsNetwork/labs/Theia%20Labs/02%20-%20HTML5%20Elements/images/thermo.png" width="150px"/>
-              <figcaption>Celcius to Farenheit Conversion</figcaption>
-            </figure>
-            <article> 
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-body">
+                <h2 class="card-title text-center mb-4">Unit Converter</h2>
+                
+                <form id="conversionForm" class="needs-validation" novalidate>
+                    <!-- Conversion Type Selection -->
+                    <div class="mb-3">
+                        <label for="conversionType" class="form-label">Conversion Type</label>
+                        <select class="form-select" id="conversionType" required>
+                            {% for type, units in conversion_types.items() %}
+                            <option value="{{ type }}">{{ type|title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
 
-              <fieldset>
-                <legend>Temperature</legend>
-                <label for="Temperature">Celsius</label> <br/>
+                    <div class="row">
+                        <!-- Input Value -->
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="inputValue" class="form-label">Value</label>
+                                <input type="number" class="form-control" id="inputValue" required step="any">
+                                <div class="invalid-feedback">
+                                    Please enter a valid number
+                                </div>
+                            </div>
+                        </div>
 
- <input type="number" id="c"> <br/>
+                        <!-- From Unit -->
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="fromUnit" class="form-label">From</label>
+                                <select class="form-select" id="fromUnit" required>
+                                    {% for type, units in conversion_types.items() %}
+                                        {% for unit in units %}
+                                        <option value="{{ unit }}" data-type="{{ type }}" 
+                                                {% if not loop.first %}style="display: none;"{% endif %}>
+                                            {{ unit }}
+                                        </option>
+                                        {% endfor %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
 
-                <button id="temperature"> Convert </button> <br/>
+                        <!-- To Unit -->
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="toUnit" class="form-label">To</label>
+                                <select class="form-select" id="toUnit" required>
+                                    {% for type, units in conversion_types.items() %}
+                                        {% for unit in units %}
+                                        <option value="{{ unit }}" data-type="{{ type }}"
+                                                {% if not loop.first %}style="display: none;"{% endif %}>
+                                            {{ unit }}
+                                        </option>
+                                        {% endfor %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
 
-                <input type="number" id="f"> <br/>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Convert</button>
+                    </div>
+                </form>
 
- <label for="Temperature">Fahrenheit</label>
-              </fieldset>
-              <aside>
-                To convert celsuis to fahrenheit yourself, use this formula replacing the `C` with your temperature in celsuis: (C × 9/5) + 32
-              </aside>
-            </article>
-          </div>
-        </section>
+                <!-- Result Display -->
+                <div id="resultContainer" class="mt-4 text-center" style="display: none;">
+                    <h3 class="result-text">
+                        <span id="resultValue"></span>
+                    </h3>
+                </div>
 
-        <div style="clear:both;"></div>
-      
-        <section id="weight"  class="b weight">          
-          <div id="wgt">
-            <figure>
-              <img src="https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBMDeveloperSkillsNetwork-CD0101EN-SkillsNetwork/labs/Theia%20Labs/02%20-%20HTML5%20Elements/images/weight.png"  width="150px"/>
-              <figcaption>Kilograms to Pound Conversion</figcaption>
-            </figure>
-            <article>
-              <fieldset>
-                <legend>Weight</legend>
-                <label for="Weight">KG</label> <br/>
-
- <input type="number"> <br/>
-
-                <button id="weight"> Convert </button>  <br/>
-
- 
-                <input type="number">  <br/>
-
-  <label for="Weight">Pounds</label>    
-              </fieldset>
-              <aside>
-                To convert kilograms to pounds yourself, use this formula replacing the `kg` with your weight in kilograms: kg x 2.205
-              </aside>      
-            </article>
-          </div>
-        </section>
-
-        <div style="clear:both;"></div>
-
-        <section id="distance"  class="b distance">
-          <div id="dst">
-            <figure>
-              <img src="https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBMDeveloperSkillsNetwork-CD0101EN-SkillsNetwork/labs/Theia%20Labs/02%20-%20HTML5%20Elements/images/speedo.png"  width="150px"/>
-              <figcaption>Kilometers to Miles Conversion</figcaption>
-            </figure>
-            <article>
-              <fieldset>
-                <legend>Distance</legend>
-                  <label for="Distance">KM</label> <br/>
-
- <input type="number">  <br/>
-
-                  <button id="distance"> Convert </button> <br/>
-
-                  <input type="number">  <br/>
-
-  <label for="Distance">Miles</label>
-              </fieldset>
-              <aside>
-                To convert kilometers to miles yourself, use this formula replacing the `km` with your distance in kilmeters: km &divide; 1.609
-              </aside>
-    
-            </article>
-          </div>
-        </section>
-        <div style="clear:both;"></div>
-
-      </div>
-
-    <div id="go-home" class="iconbutton">
-      <a href="#home">
-        <img src="https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBMDeveloperSkillsNetwork-CD0101EN-SkillsNetwork/labs/Theia%20Labs/02%20-%20HTML5%20Elements/images/home.svg"/>
-      </a>
+                <!-- Error Display -->
+                <div id="errorContainer" class="mt-4 text-center text-danger" style="display: none;">
+                    <p id="errorMessage"></p>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <footer>Learn more about HTML and CSS as a part of IBM Fullstack Cloud Developer Certification</footer>
-  </body>
-</html>
+</div>
+{% endblock %}
